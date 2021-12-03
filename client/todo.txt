@@ -1,0 +1,13 @@
+
+Todo
+
+[ ] - Logic Base 
+  [ ] - when users accept calls set players numbers and render based on player numbers
+  [ ] - Adjust stage number as game progresses
+[ ] - Build Out Room1 and Room2
+  [ ] - Furnish rooms with 3D models 
+  [ ] - Add movement controls
+  [ ] - Add Physics engine
+  [ ] - Add Modal/alert functions onClick
+[ ] - Add instructions / narrative elements
+[ ] - Build out Static front-end none 3js UI 

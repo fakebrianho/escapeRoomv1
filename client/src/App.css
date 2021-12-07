@@ -118,3 +118,57 @@ p.lorem-text {
   overflow: hidden;
   margin-right: 17px;
 }
+
+.backdrop{
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background: #000000e1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+canvas { width: 100vw; height: 100vh; display: block; z-index: 100; }
+#videos{
+  width: 100%;
+  position: absolute;
+  display: flex;
+  justify-content: flex-end;
+  z-index: 2;
+}
+
+video{
+  width: 15%;
+  height: 15%;
+}
+
+
+.buttonClass { 
+  width: 15%;
+  position: relative;
+  display: flex;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+}
+
+.incoming {
+  width: 15%;
+  position: relative;
+  display: flex;
+  top:50%;
+  left: 50%;
+  transform: translate(-50%, 60%);
+}
+
+#myCanvas{
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  padding: 0;
+  padding-top: -10%;
+  margin: 0;
+}

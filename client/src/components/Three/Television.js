@@ -6,15 +6,35 @@ source: https://sketchfab.com/3d-models/retro-tv-ea7123d1875446b4a336abc653c5558
 title: Retro TV
 */
 
-import React, { useRef } from 'react'
-import { useGLTF } from '@react-three/drei'
+import React, { useRef, useLayoutEffect, useEffect, useState } from 'react'
+import { meshBounds, useGLTF } from '@react-three/drei'
 
-export default function Model({ ...props }) {
+export default function Television({ ...props }) {
   const group = useRef()
   const { nodes, materials } = useGLTF('../../../models/television/scene.gltf')
+  const [hovered, setHover] = useState(false);
+
+  useEffect(() => {
+    if(hovered){
+      alert('TV');
+    }else{
+      console.log('as');
+    }
+    // document.body.style.cursor = hovered ? "grab" : "auto";
+  }, [hovered]);
+  useLayoutEffect(
+    () =>{
+      for(let i = 0; i < nodes.length; i++){
+        if(nodes[i].isMesh){
+          nodes[i].raycast = meshBounds;
+        }
+      }
+    },
+    []
+  );
   return (
-    <group ref={group} {...props} dispose={null}>
-      <group rotation={[-Math.PI / 2, 0, 0]}>
+    <group raycast={meshBounds} onPointerDown={(event) => setHover(true)} onPointerOut={(event) => setHover(false)} ref={group} {...props} dispose={null}>
+      <group rotation={[-Math.PI / 2, 0, -Math.PI / 2]}>
         <group rotation={[Math.PI / 2, 0, 0]}>
           <mesh geometry={nodes.defaultMaterial.geometry} material={materials.phong1} />
         </group>

@@ -9,7 +9,7 @@ title: Sea of Thieves - Music Box
 import React, { useRef } from 'react'
 import { useGLTF, useAnimations } from '@react-three/drei'
 
-export default function Model({ ...props }) {
+export default function MusicBox({ ...props }) {
   const group = useRef()
   const { nodes, materials, animations } = useGLTF('../../../models/musicBox/scene.gltf')
   const { actions } = useAnimations(animations, group)

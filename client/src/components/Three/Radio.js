@@ -6,15 +6,35 @@ source: https://sketchfab.com/3d-models/old-tube-radio-6c40a15db4594a3296995776c
 title: Old Tube Radio
 */
 
-import React, { useRef } from 'react'
-import { useGLTF } from '@react-three/drei'
+import React, { useRef, useLayoutEffect, useEffect, useState } from 'react'
+import { useGLTF, meshBounds } from '@react-three/drei'
 
 export default function Model({ ...props }) {
   const group = useRef()
   const { nodes, materials } = useGLTF('../../../models/radio/scene.gltf')
+  const [hovered, setHover] = useState(false);
+
+  useEffect(() => {
+    if(hovered){
+      alert('Radio');
+    }else{
+      console.log('as');
+    }
+    // document.body.style.cursor = hovered ? "grab" : "auto";
+  }, [hovered]);
+  useLayoutEffect(
+    () =>{
+      for(let i = 0; i < nodes.length; i++){
+        if(nodes[i].isMesh){
+          nodes[i].raycast = meshBounds;
+        }
+      }
+    },
+    []
+  );
   return (
-    <group ref={group} {...props} dispose={null}>
-      <group rotation={[-Math.PI / 2, 0, 0]}>
+    <group raycast={meshBounds} onPointerDown={(event) => setHover(true)} onPointerOut={(event) => setHover(false)} ref={group} {...props} dispose={null}>
+      <group rotation={[-Math.PI, 34, 0]}>
         <group rotation={[Math.PI / 2, 0, 0]}>
           <group position={[1.41, 0.79, 0.74]} rotation={[1.41, 0.02, 0.06]}>
             <mesh geometry={nodes.mesh_0.geometry} material={materials['Material.001']} />

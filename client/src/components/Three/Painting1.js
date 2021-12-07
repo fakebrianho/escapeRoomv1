@@ -6,16 +6,35 @@ source: https://sketchfab.com/models/4597faefaa984c07a4f7e0e32fd3ab02
 title: Oil Painting of Peaches
 */
 
-import React, { useCallback, useRef } from 'react'
-import { useGLTF } from '@react-three/drei'
+import React, { useCallback, useRef, useLayoutEffect, useEffect, useState} from 'react'
+import { useGLTF, meshBounds } from '@react-three/drei'
 import { useSpring, a } from '@react-spring/three';
 
 export default function Painting1({ ...props }) {
   const group = useRef()
   const mesh = useRef(null)
   const { nodes, materials } = useGLTF('../../../models/painting1/scene.gltf')
+  const [hovered, setHover] = useState(false);
+
+  useEffect(() => {
+    if(hovered){
+      alert('Painting1');
+    }else{
+      console.log('as');
+    }
+  }, [hovered]);
+  useLayoutEffect(
+    () =>{
+      for(let i = 0; i < nodes.length; i++){
+        if(nodes[i].isMesh){
+          nodes[i].raycast = meshBounds;
+        }
+      }
+    },
+    []
+  );
   return (
-    <group ref={group} {...props} dispose={null}>
+    <group raycast={meshBounds} onPointerDown={(event) => setHover(true)} onPointerOut={(event) => setHover(false)} ref={group} {...props} dispose={null}>
       <group rotation={[Math.PI / 2, Math.PI , 0]}>
         <group position={[-39.62, 165.99, 206.86]} rotation={[0.61, 0.13, -0.04]}>
           <mesh geometry={nodes.mesh_0.geometry} material={nodes.mesh_0.material} />

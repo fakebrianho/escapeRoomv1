@@ -6,14 +6,34 @@ source: https://sketchfab.com/3d-models/picture-frame-cat-e8cb524744e241819dad80
 title: Picture Frame - Cat
 */
 
-import React, { useRef } from 'react'
-import { useGLTF } from '@react-three/drei'
+import React, { useRef, useLayoutEffect, useEffect, useState} from 'react'
+import { useGLTF, meshBounds } from '@react-three/drei'
 
-export default function Model({ ...props }) {
+export default function Frame({ ...props }) {
   const group = useRef()
   const { nodes, materials } = useGLTF('../../../models/frame/scene.gltf')
+  const [hovered, setHover] = useState(false);
+
+  useEffect(() => {
+    if(hovered){
+      alert('Frame');
+    }else{
+      console.log('as');
+    }
+    // document.body.style.cursor = hovered ? "grab" : "auto";
+  }, [hovered]);
+  useLayoutEffect(
+    () =>{
+      for(let i = 0; i < nodes.length; i++){
+        if(nodes[i].isMesh){
+          nodes[i].raycast = meshBounds;
+        }
+      }
+    },
+    []
+  );
   return (
-    <group ref={group} {...props} dispose={null}>
+    <group raycast={meshBounds} onPointerDown={(event) => setHover(true)} onPointerOut={(event) => setHover(false)} ref={group} {...props} dispose={null}>
       <group rotation={[-Math.PI / 2, 0, 0]}>
         <group rotation={[Math.PI / 2, 0, 0]}>
           <group rotation={[1.46, 0, 0]}>

@@ -9,7 +9,7 @@ title: Bookshelf
 import React, { useRef } from 'react'
 import { useGLTF, useAnimations } from '@react-three/drei'
 
-export default function Model({ ...props }) {
+export default function Bookshelf({ ...props }) {
   const group = useRef()
   const { nodes, materials, animations } = useGLTF('../../../models/bookshelf/scene.gltf')
   const { actions } = useAnimations(animations, group)

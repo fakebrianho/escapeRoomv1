@@ -5,31 +5,18 @@ import Peer from "simple-peer";
 import styled from "styled-components";
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { Canvas, extend, useFrame, useLoader } from '@react-three/fiber';
-import Room from './Room2';
+import Room2 from './Room2';
+import Room1 from './Room1';
 import { OrbitControls, Loader} from '@react-three/drei';
-import { useModal } from 'react-hooks-use-modal';
-
-
-const Container2 = styled.div`
-  width: 100%;
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-end;
-  align-items: center;
-`;
 
 const Row = styled.div`
-  display: absolute;
-  top: 75%;
-  right: 50%;
-  margin-left: 25%;
+  display: flex;
   width: 100%;
 `;
 
+
 const Video = styled.video`
-  border: 1px solid blue;
-  width: 50%;
-  height: 50%;
+  position: inherited;
 `;
 
 function App() {
@@ -40,14 +27,10 @@ function App() {
   const [caller, setCaller] = useState("");
   const [callerSignal, setCallerSignal] = useState();
   const [callAccepted, setCallAccepted] = useState(false);
-  const [call, setCall] = useState(false);
   const [playerNumber, setPlayerNumber] = useState('');
   const [currentStage, setCurrentStage] = useState(0);
-  const [Modal, open, close, isOpen] = useModal('root', {
-    preventScroll: true,
-    closeOnOverlayClick: false
-  });
-  const triggerText = 'Open form';
+
+
   const onSubmit = (event) => {
     event.preventDefault(event);
     console.log(event.target.name.value);
@@ -56,7 +39,6 @@ function App() {
   const userVideo = useRef();
   const partnerVideo = useRef();
   const socket = useRef();
-  let currentRoom;
   useEffect(() => {
     socket.current = io.connect("/");
     navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then(stream => {
@@ -124,10 +106,9 @@ function App() {
     setCurrentStage(1);
   }
   function acceptCall() {
+    handleButtons();
     startGame();
     setPlayerNumber(1);
-    // setCurrentStage(1);
-    console.log(playerNumber);
     setCallAccepted(true);
     const peer = new Peer({
       initiator: false,
@@ -145,6 +126,19 @@ function App() {
     peer.signal(callerSignal);
   }
 
+  function handleButtons(){
+    const toBeRemoved = document.getElementsByClassName('buttonClass');
+    const inc = document.getElementsByClassName('incoming');
+    for(let i = 0; i < inc.length; i++){
+      inc[i].style.visibility = 'hidden';
+    }
+    for(let i = 0; i < toBeRemoved.length; i++){
+      toBeRemoved[i].style.visibility = 'hidden';
+    }
+    console.log(toBeRemoved);
+    // toBeRemoved.style.visibility = 'hidden';
+  }
+
   let UserVideo;
   if (stream) {
     UserVideo = (
@@ -159,115 +153,65 @@ function App() {
     );
   }
   let incomingCall;
-  let yourVideo;
   if (receivingCall) {
     incomingCall = (
-      <div>
+      <div class="incoming">
         <h1>{caller} is calling you</h1>
         <button onClick={acceptCall}>Accept</button>
       </div>
     )
   }
 
-  if(call){
-    yourVideo = (
-      <>
-      <Video playsInline muted ref={userVideo} autoPlay />  
-      </>
-    )
-  }
-
-  if(playerNumber == 1){
-
-  }
-
-  function TestComponent() {
-    return(
-    <Container2>
-      <Row>
-        <button onClick={()=> setCurrentStage(1)}>Hello World </button>
-        {Object.keys(users).map(key => {
-          if (key === yourID) {
-            return null;
-          }
-          return (
-            <button onClick={() => callPeer(key)}>Join Room with {key}</button>
-          );
-        })}
-      </Row>
-      <Row>
-        {incomingCall}
-      </Row>
-    </Container2>
-    )
-  }
-
-  function UserGreeting(props) { 
-    return(
-      <h1>Welcome Back!</h1>
-    )
-  }
-
-  function GuestGreeting(props) { 
-    return(
-      <h1>Please Sign Up!</h1>
-    )
-  }
-
-  function Greetings(props){
-    const isLoggedIn = props.isLoggedIn;
-    if(isLoggedIn) {
-      return <UserGreeting/>
-    }
-    return <GuestGreeting/>
-  }
-
-
+ 
   const CanvasComp = () => {
     return(
-      <>
-      <Canvas>
-      <Suspense fallback={null}>
-        {/* <mesh>
-          <boxBufferGeometry attach='geometry' args={[1, 1, 1]} />
-          <meshStandardMaterial attach='material'/>
-        </mesh> */}
-        <Room />
-        <OrbitControls/>
-      </Suspense>
-    </Canvas>
-    <Row>
-      {incomingCall}
-    </Row>
+      <div id='myCanvas'>
+        <Canvas perspective camera={{position:[0,1.6, 2.5]}}>
+          <Suspense fallback={null}>
+            <Room1 />
+          </Suspense>
+        </Canvas>
+        {incomingCall}
+      </div>
+    )
+  }
+
+  const CanvasComp2 = () => {
+    return(
+      <div id='myCanvas'>
+        <Canvas perspective camera={{position:[0,1.6, 2.5]}}>
+          <Suspense fallback={null}>
+            <Room2 />
+          </Suspense>
+        </Canvas>
+        {incomingCall}
+      </div>
+    )
+  }
+  const Test = () => {
+    return(
+    <>
+      {/* <Canvas perspective camera={{position:[0,1.6, 2.5]}}>
+        <Room2/>
+      </Canvas> */}
     </>
     )
   }
 
   const StageRender = () =>{
     console.log(playerNumber);
-    if(currentStage == 0){
-      return(
-        <TestComponent/>
-      )
-    }else if(currentStage == 1){
-      if(playerNumber == 1){
-        console.log('returned');
+    if(currentStage === 0){
+      return <Test/> 
+    }
+    if(currentStage === 1){
+      if(playerNumber === 1){
         return <CanvasComp/>
-      }else if(playerNumber == 2){
-        console.log('wh');
-        return(
-          <>
-            <Canvas>
-              <mesh>
-                <boxBufferGeometry attach='geometry' args={[1, 4, 1]}/>
-                <meshStandardMaterial attach='material' />
-              </mesh>
-            </Canvas>
-          </>
-        )
+      }else if(playerNumber === 2){
+        return <CanvasComp2/>
       }
     }
   }
+
   return (
     <Router>
     <Switch>
@@ -276,14 +220,30 @@ function App() {
           {UserVideo}
           {PartnerVideo}
         </div>
+        {Object.keys(users).map(key => {
+          if (key === yourID) {
+            return null;
+          }
+          return (
+            <div className="buttonClass">
+              <button onClick={() => {handleButtons(); callPeer(key);}}>Call {key}</button>
+            </div>
+          );
+        })}
         <StageRender /> 
+          {incomingCall}
       </Route>
       <Route path="/room1">
-        <Canvas>
-          <Room /> 
-          <OrbitControls />
-        </Canvas>
         <Loader/>
+        <Canvas perspective camera={{position:[0,1.6, 2.5]}}>
+          <Room1/>
+        </Canvas>
+      </Route>
+      <Route path="/room2">
+          <Loader/>
+        <Canvas perspective camera={{position:[0, 1.6, 2.5]}}>
+          <Room2 />
+          </Canvas>
       </Route>
     </Switch> 
     </Router>

@@ -6,14 +6,34 @@ source: https://sketchfab.com/3d-models/folded-newspaper-8f2a04cbcf3741088978399
 title: Folded Newspaper
 */
 
-import React, { useRef } from 'react'
-import { useGLTF } from '@react-three/drei'
+import React, { useRef, useLayoutEffect, useEffect, useState } from 'react'
+import { meshBounds, useGLTF } from '@react-three/drei'
 
-export default function Model({ ...props }) {
+export default function Newspaper({ ...props }) {
   const group = useRef()
   const { nodes, materials } = useGLTF('../../../models/newspaper/scene.gltf')
+  const [hovered, setHover] = useState(false);
+
+  useEffect(() => {
+    if(hovered){
+      alert('Newspaper');
+    }else{
+      console.log('as');
+    }
+    // document.body.style.cursor = hovered ? "grab" : "auto";
+  }, [hovered]);
+  useLayoutEffect(
+    () =>{
+      for(let i = 0; i < nodes.length; i++){
+        if(nodes[i].isMesh){
+          nodes[i].raycast = meshBounds;
+        }
+      }
+    },
+    []
+  );
   return (
-    <group ref={group} {...props} dispose={null}>
+    <group raycast={meshBounds} onPointerDown={(event) => setHover(true)} onPointerOut={(event) => setHover(false)} ref={group} {...props} dispose={null}>
       <group rotation={[-Math.PI / 2, 0, 0]}>
         <group rotation={[0.21, 0, 0]}>
           <group rotation={[Math.PI / 2, 0, 0]}>

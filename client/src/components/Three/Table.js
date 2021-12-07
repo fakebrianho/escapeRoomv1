@@ -9,7 +9,7 @@ title: Low Poly Old Vintage Table Desk - Wooden Table
 import React, { useRef } from 'react'
 import { useGLTF } from '@react-three/drei'
 
-export default function Model({ ...props }) {
+export default function Table({ ...props }) {
   const group = useRef()
   const { nodes, materials } = useGLTF('../../../models/table/scene.gltf')
   return (

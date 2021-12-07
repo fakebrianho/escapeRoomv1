@@ -6,22 +6,40 @@ source: https://sketchfab.com/3d-models/painting-by-zdzislaw-beksinski-3-11c1da5
 title: Painting by Zdzislaw Beksinski (3)
 */
 
-import React, { useRef } from 'react'
-import { useGLTF } from '@react-three/drei'
+import React, { useRef, useLayoutEffect, useEffect, useState } from 'react'
+import { useGLTF, meshBounds } from '@react-three/drei'
 
-export default function Model({ ...props }) {
+export default function Painting2({ ...props }) {
   const group = useRef()
   const { nodes, materials } = useGLTF('../../../models/painting2/scene.gltf')
-  const clicker = (e) => {
-    alert('I am click god');
-  }
+  const [hovered, setHover] = useState(false);
+
+  useEffect(() => {
+    if(hovered){
+      alert('Painting 2');
+    }else{
+      console.log('as');
+    }
+    // document.body.style.cursor = hovered ? "grab" : "auto";
+  }, [hovered]);
+  useLayoutEffect(
+    () =>{
+      for(let i = 0; i < nodes.length; i++){
+        if(nodes[i].isMesh){
+          nodes[i].raycast = meshBounds;
+        }
+      }
+    },
+    []
+  );
+
   return (
-    <group scale={[0.15, 0.15, 0.15]} ref={group} {...props} dispose={null}>
+    <group raycast={meshBounds} onPointerDown={(event) => setHover(true)} onPointerOut={(event) => setHover(false)} scale={[0.15, 0.15, 0.15]} ref={group} {...props} dispose={null}>
       <group rotation={[-Math.PI / 2, 0, 0]}>
         <group rotation={[Math.PI / 2, 0, 0]}>
           <group rotation={[-Math.PI / 2, 0, 0]}>
             <group position={[-0.31, 0, 0]} rotation={[Math.PI / 2, 0, 0]}>
-              <mesh geometry={nodes['Plotno_1_-_painting_0'].geometry} material={materials['1_-_painting']} onClick={clicker}/>
+              <mesh geometry={nodes['Plotno_1_-_painting_0'].geometry} material={materials['1_-_painting']}/>
             </group>
           </group>
           <group position={[0.16, 1.07, -0.04]} rotation={[-0.01, 0, -Math.PI]}>

@@ -1,50 +1,36 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import { Form } from './Form';
-import FocusTrap from 'focus-trap-react';
-export const Modal = ({
-  onClickOutside,
-  onKeyDown,
-  modalRef,
-  buttonRef,
-  closeModal,
-  onSubmit
-}) => {
-  console.log('runng');
-  return ReactDOM.createPortal(
-    <FocusTrap>
-      <aside
-        tag="aside"
-        role="dialog"
-        tabIndex="-1"
-        aria-modal="true"
-        className="modal-cover"
-        onClick={onClickOutside}
-        onKeyDown={onKeyDown}
-      >
-        <div className="modal-area" ref={modalRef}>
-          <button
-            ref={buttonRef}
-            aria-label="Close Modal"
-            aria-labelledby="close-modal"
-            className="_modal-close"
-            onClick={closeModal}
-          >
-            <span id="close-modal" className="_hide-visual">
-              Close
-            </span>
-            <svg className="_modal-close-icon" viewBox="0 0 40 40">
-              <path d="M 10,10 L 30,30 M 30,10 L 10,30" />
-            </svg>
-          </button>
-          <div className="modal-body">
-            <Form onSubmit={onSubmit} />
+import { motion } from 'framer-motion';
+import Backdrop from './Backdrop';
+import { Html } from '@react-three/drei';
+import { useTransition, a } from "@react-spring/three";
+// State
+import { useImmer } from "use-immer";
+const Modal = ({ open, setOpen }) => {
+
+// const [chestState, updateChestState] = useImmer(state);
+
+const closeModal = () => {
+  setOpen(!open);
+  // closeChest.volume = 0.3;
+  // closeChest.play();
+};
+
+  return (
+    <>
+        <a.div>
+          <div onClick={closeModal} className='overlay' />
+          <div className='modal-chest'>
+            <div className='top'>
+              <div className='header'>
+                <h4>Chest</h4>
+                <div onClick={closeModal} className='close'>
+                  x
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
-      </aside>
-    </FocusTrap>,
-    document.body
-  );
+        </a.div>
+        </>
+      );
 };
 
 export default Modal;
